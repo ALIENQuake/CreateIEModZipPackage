@@ -863,20 +863,18 @@ exports.getState = getState;
 /***/ 179:
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
-const { inspect } = __webpack_require__(669);
 const core = __webpack_require__(173);
 const exec = __webpack_require__(196);
 
 async function run() {
   try {
-    // Allows ncc to find assets to be included in the distribution
-    core.debug(`src: ${__dirname}`);
 
     // Execute PowerShell script
     await exec.exec("pwsh", [
       `-File`,
       `${__dirname}\\CreateIEModZipPackage.ps1`
     ]);
+
   } catch (error) {
     core.setFailed(error.message);
   }
