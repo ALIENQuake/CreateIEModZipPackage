@@ -20,7 +20,7 @@ $ModTopDirectory = $PWD
 
 Write-Host $ModTopDirectory # D:/a/ActionTest/ActionTest
 
-$ModMainFile = (Get-ChildItem -Path $PWD -Recurse -Depth 1 -Include "*.tp2", "*.tp3")[0]
+$ModMainFile = (Get-ChildItem -Path $PWD -Recurse -Depth 1 -Include "*.tp2")[0]
 
 Write-Host $ModMainFile.FullName # D:/a/ActionTest/ActionTest/ActionTest/ActionTest.tp2
 $ModID = $ModMainFile.BaseName -replace 'setup-'
@@ -70,7 +70,7 @@ New-Item -Path $tempDir/$outZip/$ModID -ItemType Directory -Force | Out-Null
 Write-Host "$tempDir/$outIEMod/$ModID"
 Write-Host "$tempDir/$outZip/$ModID"
 
-$regexAny = ".*", "*.7z", "*.bak", "*.bat", "*.iemod", "*.rar", "*.tar*", "*.tmp", "*.temp", "*.zip", 'backup', 'bgforge.ini', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
+$regexAny = ".*", "*.bak", "*.iemod", "*.tmp", "*.temp", 'backup', 'bgforge.ini', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
 $excludedAny = Get-ChildItem -Path $ModTopDirectory/$ModID -Recurse -Include $regexAny
 
 #iemod package
