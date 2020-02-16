@@ -1,0 +1,12 @@
+name: 'Create Infinity Engine mod packages'
+author: AL|EN (alienquake@hotmail.com)
+description: 'PowerShell-based GitHub Action to create Infinity Engine mod packages'
+outputs:
+  PackageBaseName:
+    description: 'BaseName of the generated packages'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'activity'
+  color: 'yellow'

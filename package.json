@@ -1,0 +1,28 @@
+{
+  "name": "createiemodzippackage",
+  "version": "1.0.0",
+  "description": "PowerShell-based GitHub Action to create Infinity Engine mod packages",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build index.js -o dist",
+    "package": "npm run build",
+    "clean:win": "del dist\\index.js",
+    "clean:darwin:linux": "rm -f dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ALIENQuake/CreateIEModZipPackage.git"
+  },
+  "keywords": [],
+  "author": "ALIENQuake",
+  "homepage": "https://github.com/ALIENQuake/CreateIEModZipPackage",
+  "dependencies": {
+    "@actions/core": "^1.2.2",
+    "@actions/exec": "^1.0.3",
+    "@actions/tool-cache": "^1.3.1"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "0.21.1",
+    "run-script-os": "^1.0.7"
+  }
+}
