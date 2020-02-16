@@ -866,21 +866,20 @@ exports.getState = getState;
 const core = __webpack_require__(173);
 const exec = __webpack_require__(196);
 
-async function run() {
-  try {
-
-    // Execute PowerShell script
-    await exec.exec("pwsh", [
-      `-File`,
-      `${__dirname}\\CreateIEModZipPackage.ps1`
-    ]);
-
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+async function ExecutePowerShellScript() {
+    try {
+        // Execute PowerShell script
+        await exec.exec(
+            "pwsh", [
+            `-File`,
+            `${__dirname}\\CreateIEModZipPackage.ps1`
+        ]);
+    } catch (error) {
+        core.setFailed(error.message);
+    }
 }
 
-run();
+ExecutePowerShellScript();
 
 
 /***/ }),
