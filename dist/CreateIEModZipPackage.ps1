@@ -20,11 +20,11 @@ $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 
 $ModTopDirectory = $PWD
 
-Write-Host $ModTopDirectory # D:/a/ActionTest/ActionTest
+Write-Host $ModTopDirectory
 
 $ModMainFile = (Get-ChildItem -Path $PWD -Recurse -Depth 1 -Include "*.tp2")[0]
 
-Write-Host $ModMainFile.FullName # D:/a/ActionTest/ActionTest/ActionTest/ActionTest.tp2
+Write-Host $ModMainFile.FullName
 $ModID = $ModMainFile.BaseName -replace 'setup-'
 
 $weiduExeBaseName = "Setup-$ModID"
@@ -40,7 +40,7 @@ if ($null -eq $ModVersion -or $ModVersion -eq '') {
 }
 
 $iniData = try { Get-Content $ModTopDirectory/$ModID/$ModID.ini -EA 0 } catch { }
-# Github release asset name limitation
+# workaround for Github release asset name limitation
 if ($iniData) {
     $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].TrimStart(' ').TrimEnd(' ')
     $simplePackageBaseName = (($ModDisplayName -replace "\s+", '_') -replace "\W") -replace '_+','-'
@@ -75,11 +75,12 @@ Write-Host "$tempDir/$outZip/$ModID"
 $regexAny = ".*", "*.bak", "*.iemod", "*.tmp", "*.temp", 'backup', 'bgforge.ini', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
 $excludedAny = Get-ChildItem -Path $ModTopDirectory/$ModID -Recurse -Include $regexAny
 
-#iemod package
+# create iemod package
 Copy-Item -Path $ModTopDirectory/$ModID/* -Destination $tempDir/$outIEMod/$ModID -Recurse -Exclude $regexAny | Out-Null
 
 Write-Host "Creating $PackageBaseName.iemod" -ForegroundColor Green
 
+# compress iemod package
 Compress-Archive -Path $tempDir/$outIEMod/* -DestinationPath "$ModTopDirectory/$PackageBaseName.zip" -Force -CompressionLevel Optimal | Out-Null
 Rename-Item -Path "$ModTopDirectory/$PackageBaseName.zip" -NewName "$ModTopDirectory/$PackageBaseName.iemod" -Force | Out-Null
 
@@ -97,11 +98,12 @@ Expand-Archive -Path "$tempDir/WeiDU-Windows.zip" -DestinationPath "$tempDir/" |
 Invoke-WebRequest -Uri $weiduMacUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Mac.zip" -PassThru | Out-Null
 Expand-Archive -Path "$tempDir/WeiDU-Mac.zip" -DestinationPath "$tempDir/" | Out-Null
 
-# Copy latest WeiDU version
+# copy latest WeiDU version
 Copy-Item "$tempDir/WeiDU-Windows/bin/amd64/weidu.exe" "$tempDir/$outZip/$weiduExeBaseName.exe" | Out-Null
 Copy-Item "$tempDir/WeiDU-Mac/bin/amd64/weidu" "$tempDir/$outZip/$($weiduExeBaseName.tolower())" | Out-Null
 chmod +x "$tempDir/$outZip/$($weiduExeBaseName.tolower())"
-# Create .command script
+
+# create .command file
 'cd "${0%/*}"' + "`n" + 'ScriptName="${0##*/}"' + "`n" + './${ScriptName%.*}' + "`n" | Set-Content -Path "$tempDir/$outZip/$($weiduExeBaseName.tolower()).command" | Out-Null
 chmod +x "$tempDir/$outZip/$($weiduExeBaseName.tolower()).command"
 Get-Content "$tempDir/$outZip/$($weiduExeBaseName.tolower()).command"
@@ -110,12 +112,12 @@ Get-ChildItem "$tempDir/$outZip" -Recurse
 
 Write-Host "Creating $PackageBaseName.zip" -ForegroundColor Green
 
-#Compress-Archive -Path $tempDir/$outZip/* -DestinationPath "$ModTopDirectory/$PackageBaseName.zip" -Force -CompressionLevel Optimal | Out-Null
-#use 7zip
+# compress zip package
 7z a "$ModTopDirectory/$PackageBaseName.zip" "$tempDir/$outZip/*"
 if ($excludedAny) {
     Write-Warning "Excluded items fom the package:"
     $excludedAny.FullName.Substring($ModTopDirectory.length) | Write-Warning
 }
+
 Write-Host "Finished." -ForegroundColor Green
 Write-Host "##[set-output name=PackageBaseName;]$($PackageBaseName)"
