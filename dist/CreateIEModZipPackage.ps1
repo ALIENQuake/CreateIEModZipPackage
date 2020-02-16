@@ -1,3 +1,5 @@
+# Copyright (c) 2019 AL|EN (alienquake@hotmail.com)
+
 function Get-IEModVersion { param($Path)
     $regexVersion = [Regex]::new('.*?VERSION(\s*)(|~"|~|"|)(@.+|.+)("~|"|~|)(|\s*)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
     foreach ($line in [System.IO.File]::ReadLines($Path)) {
