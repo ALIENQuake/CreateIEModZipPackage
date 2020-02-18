@@ -23,6 +23,7 @@ $ModTopDirectory = $PWD
 Write-Host $ModTopDirectory
 
 $ModMainFile = (Get-ChildItem -Path $PWD -Recurse -Depth 1 -Include "*.tp2")[0]
+$ModMainFolder = $ModMainFile.Directory.BaseName
 
 Write-Host $ModMainFile.FullName
 $ModID = $ModMainFile.BaseName -replace 'setup-'
@@ -39,7 +40,7 @@ if ($null -eq $ModVersion -or $ModVersion -eq '') {
     Write-Host "Version cut: $($ModVersion -replace "\s+", '_')"
 }
 
-$iniDataFile = try { Get-ChildItem -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName) -Filter $ModID.ini  } catch { }
+$iniDataFile = try { Get-ChildItem -Path $ModTopDirectory/$ModMainFolder -Filter $ModID.ini  } catch { }
 if ($iniDataFile) {
     $iniData = try { Get-Content $iniDataFile -EA 0 } catch { }
 }
@@ -68,17 +69,17 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $isWindows) {
     $tempDir = Join-path -Path '/tmp' -ChildPath (Get-Random)
 }
 
-New-Item -Path $tempDir/$outIEMod/$($ModMainFile.Directory.BaseName) -ItemType Directory -Force | Out-Null
-New-Item -Path $tempDir/$outZip/$($ModMainFile.Directory.BaseName) -ItemType Directory -Force | Out-Null
+New-Item -Path $tempDir/$outIEMod/$ModMainFolder -ItemType Directory -Force | Out-Null
+New-Item -Path $tempDir/$outZip/$ModMainFolder -ItemType Directory -Force | Out-Null
 
-Write-Host "$tempDir/$outIEMod/$($ModMainFile.Directory.BaseName)"
-Write-Host "$tempDir/$outZip/$($ModMainFile.Directory.BaseName)"
+Write-Host "$tempDir/$outIEMod/$ModMainFolder"
+Write-Host "$tempDir/$outZip/$ModMainFolder"
 
 $regexAny = ".*", "*.bak", "*.iemod", "*.tmp", "*.temp", 'backup', 'bgforge.ini', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
-$excludedAny = Get-ChildItem -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName) -Recurse -Include $regexAny
+$excludedAny = Get-ChildItem -Path $ModTopDirectory/$ModMainFolder -Recurse -Include $regexAny
 
 # create iemod package
-Copy-Item -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName)/* -Destination $tempDir/$outIEMod/$($ModMainFile.Directory.BaseName) -Recurse -Exclude $regexAny | Out-Null
+Copy-Item -Path $ModTopDirectory/$ModMainFolder/* -Destination $tempDir/$outIEMod/$ModMainFolder -Recurse -Exclude $regexAny | Out-Null
 
 Write-Host "Creating $PackageBaseName.iemod" -ForegroundColor Green
 
@@ -87,7 +88,7 @@ Compress-Archive -Path $tempDir/$outIEMod/* -DestinationPath "$ModTopDirectory/$
 Rename-Item -Path "$ModTopDirectory/$PackageBaseName.zip" -NewName "$ModTopDirectory/$PackageBaseName.iemod" -Force | Out-Null
 
 # zip package
-Copy-Item -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName)/* -Destination $tempDir/$outZip/$($ModMainFile.Directory.BaseName) -Recurse -Exclude $regexAny | Out-Null
+Copy-Item -Path $ModTopDirectory/$ModMainFolder/* -Destination $tempDir/$outZip/$ModMainFolder -Recurse -Exclude $regexAny | Out-Null
 
 # get latest weidu version
 $datalastRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/weiduorg/weidu/releases/latest" -Headers $Headers -Method Get
