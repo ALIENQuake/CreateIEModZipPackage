@@ -39,19 +39,21 @@ if ($null -eq $ModVersion -or $ModVersion -eq '') {
     Write-Host "Version cut: $($ModVersion -replace "\s+", '_')"
 }
 
-$iniData = try { Get-Content $ModTopDirectory/$ModID/$ModID.ini -EA 0 } catch { }
+$iniDataFile = try { Get-ChildItem -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName) -Filter $ModID.ini  } catch { }
+if ($iniDataFile) {
+    $iniData = try { Get-Content $iniDataFile -EA 0 } catch { }
+}
 # workaround for Github release asset name limitation
 if ($iniData) {
     $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].TrimStart(' ').TrimEnd(' ')
-    $simplePackageBaseName = (($ModDisplayName -replace "\s+", '_') -replace "\W") -replace '_+','-'
-    $simpleVersion = $ModVersion -replace "\s+",'-'
+    $simplePackageBaseName = (($ModDisplayName -replace "\s+", '_') -replace "\W") -replace '_+', '-'
+    $simpleVersion = $ModVersion -replace "\s+", '-'
     $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
 } else {
-    $simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+','-'
-    $simpleVersion = $ModVersion -replace "\s+",'-'
+    $simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+', '-'
+    $simpleVersion = $ModVersion -replace "\s+", '-'
     $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
 }
-
 Write-Host "PackageBaseName: $PackageBaseName"
 
 $outIEMod = "$ModID-iemod"
@@ -66,17 +68,17 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $isWindows) {
     $tempDir = Join-path -Path '/tmp' -ChildPath (Get-Random)
 }
 
-New-Item -Path $tempDir/$outIEMod/$ModID -ItemType Directory -Force | Out-Null
-New-Item -Path $tempDir/$outZip/$ModID -ItemType Directory -Force | Out-Null
+New-Item -Path $tempDir/$outIEMod/$($ModMainFile.Directory.BaseName) -ItemType Directory -Force | Out-Null
+New-Item -Path $tempDir/$outZip/$($ModMainFile.Directory.BaseName) -ItemType Directory -Force | Out-Null
 
-Write-Host "$tempDir/$outIEMod/$ModID"
-Write-Host "$tempDir/$outZip/$ModID"
+Write-Host "$tempDir/$outIEMod/$($ModMainFile.Directory.BaseName)"
+Write-Host "$tempDir/$outZip/$($ModMainFile.Directory.BaseName)"
 
 $regexAny = ".*", "*.bak", "*.iemod", "*.tmp", "*.temp", 'backup', 'bgforge.ini', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
-$excludedAny = Get-ChildItem -Path $ModTopDirectory/$ModID -Recurse -Include $regexAny
+$excludedAny = Get-ChildItem -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName) -Recurse -Include $regexAny
 
 # create iemod package
-Copy-Item -Path $ModTopDirectory/$ModID/* -Destination $tempDir/$outIEMod/$ModID -Recurse -Exclude $regexAny | Out-Null
+Copy-Item -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName)/* -Destination $tempDir/$outIEMod/$($ModMainFile.Directory.BaseName) -Recurse -Exclude $regexAny | Out-Null
 
 Write-Host "Creating $PackageBaseName.iemod" -ForegroundColor Green
 
@@ -85,7 +87,7 @@ Compress-Archive -Path $tempDir/$outIEMod/* -DestinationPath "$ModTopDirectory/$
 Rename-Item -Path "$ModTopDirectory/$PackageBaseName.zip" -NewName "$ModTopDirectory/$PackageBaseName.iemod" -Force | Out-Null
 
 # zip package
-Copy-Item -Path $ModTopDirectory/$ModID/* -Destination $tempDir/$outZip/$ModID -Recurse -Exclude $regexAny | Out-Null
+Copy-Item -Path $ModTopDirectory/$($ModMainFile.Directory.BaseName)/* -Destination $tempDir/$outZip/$($ModMainFile.Directory.BaseName) -Recurse -Exclude $regexAny | Out-Null
 
 # get latest weidu version
 $datalastRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/weiduorg/weidu/releases/latest" -Headers $Headers -Method Get
