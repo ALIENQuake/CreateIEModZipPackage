@@ -75,7 +75,7 @@ New-Item -Path $tempDir/$outZip/$ModMainFolder -ItemType Directory -Force | Out-
 Write-Host "$tempDir/$outIEMod/$ModMainFolder"
 Write-Host "$tempDir/$outZip/$ModMainFolder"
 
-$regexAny = ".*", "*.bak", "*.iemod", "*.tmp", "*.temp", 'backup', 'bgforge.yml', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
+$regexAny = ".*", "*.bak", "*.iemod", "*.tmp", "*.temp", 'backup', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
 $excludedAny = Get-ChildItem -Path $ModTopDirectory/$ModMainFolder -Recurse -Include $regexAny
 
 # create iemod package
