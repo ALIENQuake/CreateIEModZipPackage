@@ -92,18 +92,18 @@ Copy-Item -Path $ModTopDirectory/$ModMainFolder/* -Destination $tempDir/$outZip/
 
 # get latest weidu version
 $datalastRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/weiduorg/weidu/releases/latest" -Headers $Headers -Method Get
-$weiduWinUrl = $datalastRelease.assets | ? name -Match 'Windows' | Select-Object -ExpandProperty browser_download_url
+$weiduWinUrl = $datalastRelease.assets | ? name -Like "Windows*amd64" | Select-Object -ExpandProperty browser_download_url
 $weiduMacUrl = $datalastRelease.assets | ? name -Match 'Mac' | Select-Object -ExpandProperty browser_download_url
 
-Invoke-WebRequest -Uri $weiduWinUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Windows.zip" -PassThru | Out-Null
+Invoke-WebRequest -Uri $weiduWinUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Windows-amd64.zip" -PassThru | Out-Null
 Expand-Archive -Path "$tempDir/WeiDU-Windows.zip" -DestinationPath "$tempDir/" | Out-Null
 
 Invoke-WebRequest -Uri $weiduMacUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Mac.zip" -PassThru | Out-Null
 Expand-Archive -Path "$tempDir/WeiDU-Mac.zip" -DestinationPath "$tempDir/" | Out-Null
 
 # copy latest WeiDU version
-Copy-Item "$tempDir/WeiDU-Windows/bin/amd64/weidu.exe" "$tempDir/$outZip/$weiduExeBaseName.exe" | Out-Null
-Copy-Item "$tempDir/WeiDU-Mac/bin/amd64/weidu" "$tempDir/$outZip/$($weiduExeBaseName.tolower())" | Out-Null
+Copy-Item "$tempDir/WeiDU-Windows/weidu.exe" "$tempDir/$outZip/$weiduExeBaseName.exe" | Out-Null
+Copy-Item "$tempDir/WeiDU-Mac/weidu" "$tempDir/$outZip/$($weiduExeBaseName.tolower())" | Out-Null
 chmod +x "$tempDir/$outZip/$($weiduExeBaseName.tolower())"
 
 # create .command file
