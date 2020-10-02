@@ -95,7 +95,7 @@ $datalastRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/weiduorg
 $weiduWinUrl = $datalastRelease.assets | ? name -Like "WeiDU*Windows*amd64*" | Select-Object -ExpandProperty browser_download_url
 $weiduMacUrl = $datalastRelease.assets | ? name -Like "WeiDU*Mac*" | Select-Object -ExpandProperty browser_download_url
 
-Invoke-WebRequest -Uri $weiduWinUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Windows-amd64.zip" -PassThru | Out-Null
+Invoke-WebRequest -Uri $weiduWinUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Windows.zip" -PassThru | Out-Null
 Expand-Archive -Path "$tempDir/WeiDU-Windows.zip" -DestinationPath "$tempDir/" | Out-Null
 
 Invoke-WebRequest -Uri $weiduMacUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Mac.zip" -PassThru | Out-Null
