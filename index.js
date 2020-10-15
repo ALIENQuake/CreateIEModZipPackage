@@ -7,7 +7,7 @@ async function ExecutePowerShellScript() {
         await exec.exec(
             "pwsh", [
             `-File`,
-            `${__dirname}\\CreateIEModZipPackage.ps1`
+            `${__dirname}/CreateIEModZipPackage.ps1`
         ]);
     } catch (error) {
         core.setFailed(error.message);

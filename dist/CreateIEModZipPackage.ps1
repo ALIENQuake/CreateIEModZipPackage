@@ -28,7 +28,7 @@ $ModMainFolder = $ModMainFile.Directory.BaseName
 Write-Host $ModMainFile.FullName
 $ModID = $ModMainFile.BaseName -replace 'setup-'
 
-$weiduExeBaseName = "Setup-$ModID"
+$weiduExeBaseName = "setup-$ModID"
 
 $ModVersion = Get-IEModVersion -Path $ModMainFile.FullName
 
