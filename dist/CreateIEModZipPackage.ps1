@@ -44,7 +44,7 @@ $iniDataFile = try { Get-ChildItem -Path $ModTopDirectory/$ModMainFolder -Filter
 if ($iniDataFile) {
     $iniData = try { Get-Content $iniDataFile -EA 0 } catch { }
 }
-# workaround for Github release asset name limitation
+# workaround for GitHub release asset name limitation
 if ($iniData) {
     $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].TrimStart(' ').TrimEnd(' ')
     $simplePackageBaseName = (($ModDisplayName -replace "\s+", '_') -replace "\W") -replace '_+', '-'
