@@ -6,7 +6,8 @@
   "scripts": {
     "build": "ncc build index.js -o dist",
     "package": "npm run build",
-    "clean:win": "del dist\\index.js",
+    "clean": "run-script-os",
+    "clean:windows": "del dist\\index.js",
     "clean:darwin:linux": "rm -f dist/index.js"
   },
   "repository": {
