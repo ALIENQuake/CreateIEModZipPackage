@@ -1,6 +1,6 @@
 {
   "name": "createiemodzippackage",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "PowerShell-based GitHub Action to create Infinity Engine mod packages",
   "main": "index.js",
   "scripts": {
