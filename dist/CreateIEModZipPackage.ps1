@@ -40,10 +40,11 @@ if ($null -eq $ModVersion -or $ModVersion -eq '') {
     Write-Host "Version cut: $($ModVersion -replace "\s+", '_')"
 }
 
-$iniDataFile = try { Get-ChildItem -Path $ModTopDirectory/$ModMainFolder -Filter $ModID.ini  } catch { }
+$iniDataFile = try { Get-ChildItem -Path $ModTopDirectory/$ModMainFolder -Filter "$ModID.ini"  } catch { $null }
 if ($iniDataFile) {
-    $iniData = try { Get-Content $iniDataFile -EA 0 } catch { }
+    $iniData = try { Get-Content $iniDataFile -EA 0 } catch { $null }
 }
+$iniData
 # workaround for GitHub release asset name limitation
 if ($iniData) {
     $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].TrimStart(' ').TrimEnd(' ')
