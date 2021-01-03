@@ -28,7 +28,13 @@ $ModMainFolder = $ModMainFile.Directory.BaseName
 Write-Host $ModMainFile.FullName
 $ModID = $ModMainFile.BaseName -replace 'setup-'
 
-$weiduExeBaseName = "setup-$ModID"
+$cleanModID = $ModID -replace "\W+", ''
+
+if ($cleanModID[0] -ceq $cleanModID[0].ToString().ToUpperInvariant()){
+    $weiduExeBaseName = "Setup-$ModID"
+} else {
+    $weiduExeBaseName = "setup-$ModID"
+}
 
 $ModVersion = Get-IEModVersion -Path $ModMainFile.FullName
 
@@ -56,6 +62,7 @@ if ($iniData) {
     $simpleVersion = $ModVersion -replace "\s+", '-'
     $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
 }
+
 Write-Host "PackageBaseName: $PackageBaseName"
 
 $outIEMod = "$ModID-iemod"
