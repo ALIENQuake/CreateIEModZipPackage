@@ -1,18 +1,19 @@
 # Copyright (c) 2019 AL|EN (alienquake@hotmail.com)
 
-function Get-IEModVersion { param($Path)
-    $regexVersion = [Regex]::new('.*?VERSION(\s*)(|~"|~|"|)(@.+|.+)("~|"|~|)(|\s*)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-    foreach ($line in [System.IO.File]::ReadLines($Path)) {
-        $line = $line -replace "\/\/(.*)(\n|)"
-        if ($line -match "\S" -and $line -notmatch "\/\*[\s\S]*?\*\/") {
-            if ($regexVersion.IsMatch($line)) {
-                [string]$dataVersionLine = $regexVersion.Matches($line).Groups[3].Value.ToString().trimStart(' ').trimStart('~').trimStart('"').TrimEnd(' ').TrimEnd('~').TrimEnd('"')
-                $dataVersionLine
-                break
-            }
-        }
-    }
+function Get-IEModVersion {
+    param($Path)
+    $regexVersion = [Regex]'.*?VERSION(\s*)(|~"|~|"|)(@.+|.+)("~|"|~|)(|\s*)'
+    $regexCommentsMultiLine = '\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$'
+    $regexCommentsSingleLine = '//(.*?)\r?\n'
+
+    $dataRaw = Get-Content -Path $Path -ReadCount 0 -Raw
+
+    $dataClean = ($dataRAW -replace $regexCommentsMultiLine) -replace $regexCommentsSingleLine 
+
+    [string]$dataVersion = ($regexVersion.Matches($dataClean).Groups[3].Value.Trim() -replace '~') -replace '"'
+    $dataVersion
 }
+
 
 $Token = $ENV:GITHUB_TOKEN
 $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
