@@ -93,8 +93,7 @@ Copy-Item -Path $ModTopDirectory/$ModMainFolder/* -Destination $tempDir/$outIEMo
 Write-Host "Creating $PackageBaseName.iemod" -ForegroundColor Green
 
 # compress iemod package
-Compress-Archive -Path $tempDir/$outIEMod/* -DestinationPath "$ModTopDirectory/$PackageBaseName.zip" -Force -CompressionLevel Optimal | Out-Null
-Rename-Item -Path "$ModTopDirectory/$PackageBaseName.zip" -NewName "$ModTopDirectory/$PackageBaseName.iemod" -Force | Out-Null
+7z a -tzip "$ModTopDirectory/$PackageBaseName.iemod" "$tempDir/$outIEMod/*"
 
 # zip package
 Copy-Item -Path $ModTopDirectory/$ModMainFolder/* -Destination $tempDir/$outZip/$ModMainFolder -Recurse -Exclude $regexAny | Out-Null
