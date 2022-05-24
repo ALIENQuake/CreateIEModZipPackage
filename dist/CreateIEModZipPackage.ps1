@@ -60,10 +60,11 @@ $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
 if ($iniData) {
     $nameKey = $iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }
     if ($nameKey){
-        $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].TrimStart(' ').TrimEnd(' ')
-        $simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+', '-'
-        $simpleVersion = $ModVersion -replace "\s+", '-'
-        $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
+        $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].Trim()
+        if ($ModDisplayName){
+            $simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+', '-'
+            $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
+        }
     }
 }
 
