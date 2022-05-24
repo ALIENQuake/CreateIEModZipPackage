@@ -53,15 +53,17 @@ if ($iniDataFile) {
 }
 
 # workaround for GitHub release asset name limitation
+$simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+', '-'
+$simpleVersion = $ModVersion -replace "\s+", '-'
+$PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
+
 if ($iniData) {
     $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].TrimStart(' ').TrimEnd(' ')
-    $simplePackageBaseName = (($ModDisplayName -replace "\s+", '_') -replace "\W") -replace '_+', '-'
-    $simpleVersion = $ModVersion -replace "\s+", '-'
-    $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
-} else {
-    $simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+', '-'
-    $simpleVersion = $ModVersion -replace "\s+", '-'
-    $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
+    if ($ModDisplayName){
+        $simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+', '-'
+        $simpleVersion = $ModVersion -replace "\s+", '-'
+        $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
+    }
 }
 
 Write-Host "PackageBaseName: $PackageBaseName"
