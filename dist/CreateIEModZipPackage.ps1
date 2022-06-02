@@ -62,7 +62,7 @@ if ($iniData) {
     if ($nameKey){
         $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].Trim()
         if ($ModDisplayName){
-            $simplePackageBaseName = (($ModID -replace "\s+", '_') -replace "\W") -replace '_+', '-'
+            $simplePackageBaseName = (($ModDisplayName -replace "\s+", '_') -replace "\W") -replace '_+', '-'
             $PackageBaseName = ($simplePackageBaseName + '-' + $simpleVersion).ToLower()
         }
     }
