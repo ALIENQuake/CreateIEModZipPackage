@@ -14,7 +14,6 @@ function Get-IEModVersion {
     $dataVersion
 }
 
-
 $Token = $ENV:GITHUB_TOKEN
 $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
 $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
@@ -48,6 +47,7 @@ if ($null -eq $ModVersion -or $ModVersion -eq '') {
 }
 
 $iniDataFile = try { Get-ChildItem -Path $ModTopDirectory/$ModMainFolder -Filter "$ModID.ini"  } catch { $null }
+
 if ($iniDataFile) {
     $iniData = try { Get-Content $iniDataFile -EA 0 } catch { $null }
 }
@@ -122,17 +122,18 @@ chmod +x "$tempDir/$outZip/$($weiduExeBaseName.tolower())"
 'cd "${0%/*}"' + "`n" + 'ScriptName="${0##*/}"' + "`n" + './${ScriptName%.*}' + "`n" | Set-Content -Path "$tempDir/$outZip/$($weiduExeBaseName.tolower()).command" | Out-Null
 chmod +x "$tempDir/$outZip/$($weiduExeBaseName.tolower()).command"
 Get-Content "$tempDir/$outZip/$($weiduExeBaseName.tolower()).command"
-
 Get-ChildItem "$tempDir/$outZip" -Recurse
 
 Write-Host "Creating $PackageBaseName.zip" -ForegroundColor Green
 
 # compress zip package
 7z a "$ModTopDirectory/$PackageBaseName.zip" "$tempDir/$outZip/*"
+
 if ($excludedAny) {
     Write-Warning "Excluded items fom the package:"
     $excludedAny.FullName.Substring($ModTopDirectory.length) | Write-Warning
 }
 
+Write-Output "PackageBaseName=$PackageBaseName" >> $env:GITHUB_OUTPUT
+
 Write-Host "Finished." -ForegroundColor Green
-Write-Host "##[set-output name=PackageBaseName;]$($PackageBaseName)"
