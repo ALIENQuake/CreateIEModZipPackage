@@ -5,7 +5,7 @@ outputs:
   PackageBaseName:
     description: 'BaseName of the generated packages'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
 branding:
   icon: 'activity'
