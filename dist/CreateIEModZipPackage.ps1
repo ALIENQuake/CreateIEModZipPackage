@@ -104,7 +104,7 @@ Copy-Item -Path $ModTopDirectory/$ModMainFolder/* -Destination $tempDir/$outZip/
 
 # get latest weidu version
 $datalastRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/weiduorg/weidu/releases/latest" -Headers $Headers -Method Get
-$weiduWinUrl = $datalastRelease.assets | Where-Object { $_.name -match '^WeiDU-Windows-v?\d+\.zip$' } | Select-Object -ExpandProperty browser_download_url
+$weiduWinUrl = $datalastRelease.assets | Where-Object { $_.name -match '^WeiDU-Win(dows)?-(x64-)?v?\d+\.zip$' } | Select-Object -ExpandProperty browser_download_url
 $weiduMacUrl = $datalastRelease.assets | Where-Object { $_.name -match '^WeiDU-Mac-v?\d+\.zip$' } | Select-Object -ExpandProperty browser_download_url
 
 Invoke-WebRequest -Uri $weiduWinUrl -Headers $Headers -OutFile "$tempDir/WeiDU-Windows.zip" -PassThru | Out-Null
