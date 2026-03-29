@@ -1,7 +1,7 @@
 # CreateIEModZipPackage
 
 > [!NOTE]
-> This repository contain legacy action code used by legacy version of Infinity Auto Packager. The latest version of IAP is using this repo: https://github.com/ALIENQuake/CreateIEModPackage
+> This repository contain legacy action code used by legacy version of Infinity Auto Packager for backward comaptibility. The latest version of IAP is using this repo: https://github.com/ALIENQuake/CreateIEModPackage
 
 PowerShell-based GitHub Action to create Infinity Engine mod packages
 
